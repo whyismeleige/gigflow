@@ -54,7 +54,7 @@ exports.createBid = asyncHandler(async (req, res) => {
   });
 
   if (existingBid) {
-    throw new ConflictError("");
+    throw new ConflictError("You have already submitted a bid for this gig");
   }
 
   // Create new bid

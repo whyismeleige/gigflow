@@ -37,6 +37,10 @@ const GigSchema = new mongoose.Schema(
       default: "open",
       index: true,
     },
+    hiredFreelancerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,
@@ -68,7 +72,5 @@ GigSchema.methods.isOwner = function (userId) {
 GigSchema.methods.canAcceptBids = function () {
   return this.status === "open";
 };
-
-
 
 module.exports = mongoose.model("Gig", GigSchema);

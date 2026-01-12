@@ -31,6 +31,7 @@ exports.getAllGigs = asyncHandler(async (req, res) => {
 
   const gigs = await Gig.find(query)
     .populate("ownerId", "name email avatar")
+    .populate("bidCount")
     .sort(search ? { score: { $meta: "textScore" } } : { createdAt: -1 })
     .limit(limitNum)
     .skip(skip)
@@ -61,16 +62,11 @@ exports.getAllGigs = asyncHandler(async (req, res) => {
 exports.getGigById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const gig = await Gig.findById(id);
+  const gig = await Gig.findById(id).populate("bids").populate("bidCount")
 
   if (!gig) {
     throw new NotFoundError("Gig not found");
   }
-
-  const bidCount = await Bid.countDocuments({
-    gigId: gig._id,
-    status: "pending",
-  });
 
   let userHasBid = false;
   if (req.user) {
@@ -80,7 +76,7 @@ exports.getGigById = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: "Gig fetched successfully",
     type: "success",
-    gig: { ...gig.toObject(), bidCount, userHasBid },
+    gig: { ...gig.toObject(), userHasBid },
   });
 });
 
@@ -93,7 +89,7 @@ exports.getGigById = asyncHandler(async (req, res) => {
 exports.createGig = asyncHandler(async (req, res) => {
   const { title, description, budget } = req.body;
 
-  if (!title || !description || budget) {
+  if (!title || !description || !budget) {
     throw new ValidationError("Please provide a title, description and budget");
   }
 
@@ -220,8 +216,9 @@ exports.getMyGigs = asyncHandler(async (req, res) => {
 
   const gigs = await Gig.find(query)
     .populate("hiredFreelancerId", "name email avatar")
+    .populate("bidCount")
     .sort({ createdAt: -1 })
-    .lean();
+    .lean({ virtuals: true });
 
   res.status(200).send({
     message: "Your gigs fetched successfully",

@@ -47,4 +47,15 @@ BidSchema.index({ gigId: 1, status: 1 });
 BidSchema.index({ freelancerId: 1, status: 1 });
 BidSchema.index({ gigId: 1, freelancerId: 1 }, { unique: true });
 
+BidSchema.index({ gigId: 1, _id: 1 });
+
+BidSchema.methods.isOwner = function (userId) {
+  return this.freelancerId.toString() === userId.toString();
+};
+
+BidSchema.statics.hasUserBid = async function(gigId, userId) {
+  const bid = await this.findOne({ gigId, freelancerId: userId });
+  return !!bid;
+};
+
 module.exports = mongoose.model("Bid", BidSchema);

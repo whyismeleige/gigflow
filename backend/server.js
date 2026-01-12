@@ -17,6 +17,8 @@ const io = intializeSocket(server);
 const PORT = process.env.PORT || 8080;
 
 const authRoutes = require("./routes/auth.routes");
+const gigsRoutes = require("./routes/gigs.routes");
+const bidsRoutes = require("./routes/bids.routes");
 
 app.set("io", io);
 
@@ -37,6 +39,8 @@ app.use(express.urlencoded({ extended: true }));
 connectDB();
 
 app.use("/api/auth", authRoutes);
+app.use("/api/gigs", gigsRoutes);
+app.use("/api/bids", bidsRoutes);
 
 app.get("/health", (req, res) => {
   res.status(200).json({

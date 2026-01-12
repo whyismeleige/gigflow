@@ -11,3 +11,7 @@ node_modules/
 .env.*.local
 **/.env
 **/.env.*
+
+frontend/.next
+.next/
+**/.next*
