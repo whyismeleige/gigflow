@@ -23,6 +23,11 @@ export const logoutUser = createAsyncThunk("auth/logout", async () => {
   await authApi.logout();
 });
 
+export const fetchProfile = createAsyncThunk("auth/profile", async () => {
+  const response = await authApi.getProfile();
+  return response.data.user;
+});
+
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,

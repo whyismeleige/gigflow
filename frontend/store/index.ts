@@ -2,6 +2,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./slices/auth.slice";
 import gigsReducer from "./slices/gigs.slice";
+import bidsReducer from "./slices/bids.slice";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
 const authPersistConfig = {
@@ -14,7 +15,8 @@ const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 
 const rootReducer = combineReducers({
   auth: persistedAuthReducer,
-  gigs: gigsReducer
+  gigs: gigsReducer,
+  bids: bidsReducer,
 });
 
 export const store = configureStore({

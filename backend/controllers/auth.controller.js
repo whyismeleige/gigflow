@@ -20,6 +20,14 @@ const getCookieOptions = () => ({
   maxAge: 7 * 24 * 60 * 60 * 1000,
 });
 
+exports.getProfile = asyncHandler(async (req, res) => {
+  res.status(200).send({
+    user: sanitizeUser(req.user),
+    message: "User Profile Sent",
+    type: "success",
+  });
+});
+
 exports.register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
