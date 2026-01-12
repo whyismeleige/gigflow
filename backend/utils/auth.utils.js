@@ -36,24 +36,18 @@ const getMetaData = (req) => {
 };
 
 // Authorization Token Utils
-const createAccessToken = (payload) => {
+const createToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });
 };
 
-const createRefreshToken = (payload) => {
-  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
-    expiresIn: process.env.JWT_REFRESH_EXPIRE,
-  });
-};
-
-const decodeAccessToken = (token) => {
-  return jwt.verify(token, process.env.JWT_SECRET);
-};
-
-const decodeRefreshToken = (token) => {
-  return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+const verifyToken = (token) => {
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch {
+    return null;
+  }
 };
 
 // User Data Utils
@@ -62,7 +56,6 @@ const sanitizeUser = (user) => {
     _id: user._id,
     email: user.email,
     name: user.name,
-    role: user.role,
     avatar: user.avatar,
     activity: {
       lastLogin: user.activity?.lastLogin,
@@ -73,10 +66,8 @@ const sanitizeUser = (user) => {
 };
 
 module.exports = {
-  createAccessToken,
-  createRefreshToken,
   getMetaData,
-  decodeAccessToken,
-  decodeRefreshToken,
+  createToken,
+  verifyToken,
   sanitizeUser,
 };

@@ -1,11 +1,19 @@
-const router = require("express").Router();
+const express = require("express");
 const controller = require("../controllers/bids.controller");
 const { authenticateToken } = require("../middleware/auth.middleware");
 
-router.use("")
+const router = express.Router();
 
-router.post("/login", controller.login);
-router.post("/register", controller.register);
-router.post("/logout", authenticateToken, controller.logout);
+router.use(authenticateToken);
+
+// Bid Crud Operations
+router.post("/", controller.createBid); // Submit a bid
+router.get("/my-bids", controller.getMyBids) // Get user's bids
+router.get("/:gigId", controller.getBidsByGig) // Get all bids for a gig (owner only)
+router.patch("/:id", controller.updateBid); // Update/edit a bid
+router.delete("/:id", controller.deleteBid) // Withdraw a bid
+
+// Hiring logic 
+router.patch("/:bidId/hire", controller.hireBid); // Hire a freelancer
 
 module.exports = router;

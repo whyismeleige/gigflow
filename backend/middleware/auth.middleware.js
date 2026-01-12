@@ -1,43 +1,38 @@
-const { decodeAccessToken } = require("../utils/auth.utils");
-const User = require("../models").user;
-const redisClient = require("../database/redis");
+const { verifyToken } = require("../utils/auth.utils");
 const { AuthenticationError } = require("../utils/error.utils");
+const User = require("../models").user;
 
 exports.authenticateToken = async (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (!token) {
-    throw AuthenticationError("Session Token required");
-  }
-
   try {
-    const { id } = decodeAccessToken(token);
+    // Extract token from cookie (not from Authorization header)
+    const token = req.cookies.token;
 
-    let user = await redisClient.get(id);
-
-    if (!user) {
-      user = await User.findById(id);
-      await redisClient.setEx(id, 300, JSON.stringify(user));
-    } else {
-      user = User.hydrate(JSON.parse(user));
+    if (!token) {
+      throw new AuthenticationError("Authentication required. Please login");
     }
 
+    // Verify JWT token
+    const { id } = verifyToken(token);
+
+    // Find user from decoded token
+    const user = await User.findById(id);
+
     if (!user) {
-      await redisClient.del(id);
-      return res.status(400).send({
-        message: "User Not Found",
-        type: "error",
-      });
+      throw new AuthenticationError("User not found. Please login again");
     }
 
+    // Attach user to request object
     req.user = user;
-
     next();
   } catch (error) {
-    return res.status(403).send({
-      message: "Unauthorized Access",
-      type: "error",
-    });
+    if (error.name === "JsonWebTokenError") {
+      return next(new AuthenticationError("Invalid token. Please login again"));
+    }
+    if (error.name === "TokenExpiredError") {
+      return next(
+        new AuthenticationError("Session expired. Please login again")
+      );
+    }
+    next(error);
   }
 };
