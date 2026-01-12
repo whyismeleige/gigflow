@@ -19,7 +19,7 @@ const Gig = db.gig;
 
 exports.createBid = asyncHandler(async (req, res) => {
   const { gigId, message, proposedPrice } = req.body;
-
+  const io = req.app.get("io");
   if (!gigId || !message || !proposedPrice) {
     throw new ValidationError("Please provide gig, message and proposed price");
   }
@@ -29,7 +29,10 @@ exports.createBid = asyncHandler(async (req, res) => {
   }
 
   // Find the gig
-  const gig = await Gig.findById(gigId);
+  const gig = await Gig.findById(gigId).populate(
+    "ownerId",
+    "name email avatar"
+  );
 
   if (!gig) {
     throw new NotFoundError("Gig not found");
@@ -68,6 +71,16 @@ exports.createBid = asyncHandler(async (req, res) => {
 
   await newBid.populate("freelancerId", "name email avatar");
   await newBid.populate("gigId", "title budget");
+
+  // Emit socket event to gig owner
+  const ownerId =
+    typeof gig.ownerId === "object" ? gig.ownerId._id : gig.ownerId;
+  io.to(`user-${ownerId}`).emit("bid-received", {
+    gigId: gig._id.toString(),
+    gigTitle: gig.title,
+    freelancerName: req.user.name,
+    bidId: newBid._id.toString(),
+  });
 
   res.status(201).send({
     message: "Bid submitted successfully",
@@ -252,6 +265,7 @@ exports.deleteBid = asyncHandler(async (req, res) => {
 exports.hireBid = asyncHandler(async (req, res) => {
   const { bidId } = req.params;
 
+  const io = req.app.get("io");
   // Start a MongoDB session for transaction
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -345,13 +359,12 @@ exports.hireBid = asyncHandler(async (req, res) => {
     await updatedBid.populate("freelancerId", "name email avatar");
     await updatedBid.populate("gigId", "title description budget");
 
-    if (req.app.io) {
-      req.app.io.to(`user-${bid.freelancerId}`).emit("bid-hired", {
-        gigTitle: gig.title,
-        bidId: bid._id,
-        message: `Congratulations! You have been hired for ${gig.title}`,
-      });
-    }
+    // Emit socket event to hired freelancer
+    io.to(`user-${bid.freelancerId}`).emit("bid-hired", {
+      gigTitle: gig.title,
+      bidId: bid._id.toString(),
+      message: `Congratulations! You have been hired for "${gig.title}"`,
+    });
 
     res.status(200).send({
       message: "Freelancer hired successfully",

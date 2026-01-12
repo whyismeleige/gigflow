@@ -21,7 +21,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   }, [loading, dispatch, user, mounted]);
 
   useEffect(() => {
-    if (mounted && !loading && !isAuthenticated) {
+    if (mounted && !loading && !user && !isAuthenticated) {
       router.replace("/auth");
     }
   }, [isAuthenticated, router, mounted]);

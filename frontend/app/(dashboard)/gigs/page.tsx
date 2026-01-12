@@ -13,6 +13,7 @@ export default function GigsPage() {
   const dispatch = useAppDispatch();
   const { items, loading, filters } = useAppSelector((state) => state.gigs);
   const [searchInput, setSearchInput] = useState("");
+  
 
   useEffect(() => {
     dispatch(fetchGigs({ search: filters.search }));

@@ -7,7 +7,7 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     const response = await authApi.login(credentials);
-    return response.data.user;
+    return response.data;
   }
 );
 
@@ -15,7 +15,7 @@ export const registerUser = createAsyncThunk(
   "auth/register",
   async (credentials: RegisterCredentials) => {
     const response = await authApi.register(credentials);
-    return response.data.user;
+    return response.data;
   }
 );
 
@@ -25,7 +25,8 @@ export const logoutUser = createAsyncThunk("auth/logout", async () => {
 
 export const fetchProfile = createAsyncThunk("auth/profile", async () => {
   const response = await authApi.getProfile();
-  return response.data.user;
+  console.log(response);
+  return response.data;
 });
 
 const initialState: AuthState = {
@@ -85,12 +86,23 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = null;
       })
-      .addCase(logoutUser.rejected, (state) => {
+      .addCase(logoutUser.rejected, (state, action) => {
         state.isAuthenticated = false;
         state.user = null;
         state.loading = false;
-        state.error = null;
+        state.error = action.payload as string;
       });
+    builder
+      .addCase(fetchProfile.pending, (state) => {
+        state.error = null;
+        state.loading = true;
+      })
+      .addCase(fetchProfile.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.loading = false;
+        state.error = null;
+      })
+      
   },
 });
 

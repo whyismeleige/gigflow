@@ -1,4 +1,5 @@
 "use client";
+import PublicRoute from "@/components/routes/PublicRoute";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -142,7 +143,7 @@ function AuthPage() {
 
     try {
       setLoading(true);
-    
+
       const data = await dispatch(
         view === "signup"
           ? registerUser({ email, password, name })
@@ -382,10 +383,12 @@ function AuthPage() {
 
 export default function Page() {
   return (
-    <div className="bg-background flex min-h-svh flex-col w-screen items-center justify-center gap-6 p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <AuthPage />
+    <PublicRoute>
+      <div className="bg-background flex min-h-svh flex-col w-screen items-center justify-center gap-6 p-6 md:p-10">
+        <div className="w-full max-w-sm">
+          <AuthPage />
+        </div>
       </div>
-    </div>
+    </PublicRoute>
   );
 }

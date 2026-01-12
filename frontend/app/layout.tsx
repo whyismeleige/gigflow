@@ -3,7 +3,7 @@ import "./globals.css";
 import { Provider } from "react-redux";
 import { store } from "@/store";
 import { Toaster } from "react-hot-toast";
-import Providers from "@/store/providers";
+import Providers from "@/components/providers";
 
 export const metadata: Metadata = {
   title: "GigFlow",

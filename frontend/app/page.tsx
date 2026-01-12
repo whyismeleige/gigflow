@@ -7,6 +7,7 @@ import { useAppSelector } from "@/hooks/redux";
 import { Button } from "@/components/ui/button";
 import { Briefcase, Users, TrendingUp, Shield } from "lucide-react";
 import Link from "next/link";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -35,6 +36,7 @@ export default function LandingPage() {
               <Link href="/auth?view=signup">
                 <Button>Get Started</Button>
               </Link>
+              <ModeToggle/>
             </div>
           </div>
         </div>

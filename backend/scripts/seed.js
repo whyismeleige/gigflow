@@ -32,36 +32,40 @@ const connectDB = async () => {
   }
 };
 
+const getHashedPassword = (password = "Password123") => {
+  return bcrypt.hashSync(password, 12);
+} 
+
 // Sample user data
 const users = [
   {
     name: "Alice Johnson",
     email: "alice@example.com",
-    password: "Password123",
+    password: getHashedPassword(),
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alice",
   },
   {
     name: "Bob Smith",
     email: "bob@example.com",
-    password: "Password123",
+    password: getHashedPassword(),
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bob",
   },
   {
     name: "Charlie Davis",
     email: "charlie@example.com",
-    password: "Password123",
+    password: getHashedPassword(),
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie",
   },
   {
     name: "Diana Prince",
     email: "diana@example.com",
-    password: "Password123",
+    password: getHashedPassword(),
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Diana",
   },
   {
     name: "Ethan Hunt",
     email: "ethan@example.com",
-    password: "Password123",
+    password: getHashedPassword(),
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ethan",
   },
 ];

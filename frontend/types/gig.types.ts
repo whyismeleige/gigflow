@@ -11,6 +11,8 @@ export interface Gig {
   status: GigStatus;
   bidCount?: number;
   userHasBid?: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateGigPayload {

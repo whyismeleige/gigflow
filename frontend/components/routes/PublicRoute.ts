@@ -14,12 +14,12 @@ export default function PublicRoute({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (mounted && isAuthenticated && user) {
-      router.replace(`/auth`);
+      router.replace(`/gigs`);
     }
   }, [mounted, isAuthenticated, router, user]);
 
   // Don't render anything while checking auth or redirecting
-  if (!mounted || loading || (isAuthenticated && user)) {
+  if (!mounted || loading ) {
     return null;
   }
 

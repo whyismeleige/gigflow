@@ -1,8 +1,9 @@
 "use client";
 import { Provider } from "react-redux";
-import { store } from ".";
+import { store } from "../../store";
 import { ReactNode } from "react";
 import { ThemeProvider } from "./theme-provider";
+import SocketProvider from "./socket-provider";
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (
@@ -13,7 +14,7 @@ export default function Providers({ children }: { children: ReactNode }) {
         enableSystem
         disableTransitionOnChange
       >
-        {children}
+        <SocketProvider>{children}</SocketProvider>
       </ThemeProvider>
     </Provider>
   );

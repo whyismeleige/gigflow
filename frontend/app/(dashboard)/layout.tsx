@@ -26,6 +26,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useMounted } from "@/hooks/useMounted";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 export default function DashboardLayout({
   children,
@@ -37,6 +39,8 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const isMounted = useMounted();
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
@@ -95,9 +99,9 @@ export default function DashboardLayout({
                   Post a Gig
                 </Button>
               </Link>
-
+                <ModeToggle/>
               {/* User Menu */}
-              {user && isAuthenticated && (
+              {isMounted && user && isAuthenticated && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
