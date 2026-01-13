@@ -1,4 +1,3 @@
-// frontend/hooks/useSocket.tsx
 import { useEffect, useRef } from "react";
 import { socket } from "@/lib/socket/socket";
 import { useAppDispatch, useAppSelector } from "./redux";
@@ -19,21 +18,17 @@ export function useSocket() {
       socket.connect();
 
       socket.on("connect", () => {
-        console.log("Socket connected");
         isConnectedRef.current = true;
         // Register user with their ID
         socket.emit("register-user", user._id);
       });
 
       socket.on("disconnect", () => {
-        console.log("Socket disconnected");
         isConnectedRef.current = false;
       });
 
       // Listen for bid-hired event (freelancer gets hired)
       socket.on("bid-hired", (data: SocketBidHiredPayload) => {
-        console.log("Bid hired notification:", data);
-        
         // Update myBids state - mark the hired bid as "hired"
         dispatch({
           type: "bids/updateBidStatusFromSocket",
@@ -59,9 +54,7 @@ export function useSocket() {
       });
 
       // Listen for bid-received event (gig owner receives a new bid)
-      socket.on("bid-received", (data: SocketBidReceivedPayload) => {
-        console.log("Bid received notification:", data);
-        
+      socket.on("bid-received", (data: SocketBidReceivedPayload) => {        
         // Update myGigs state - increment bid count for the gig
         dispatch({
           type: "gigs/incrementBidCountFromSocket",

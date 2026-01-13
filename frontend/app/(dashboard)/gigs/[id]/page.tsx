@@ -126,8 +126,6 @@ export default function GigDetailPage() {
 
   const owner =
     typeof currentGig.ownerId === "string" ? null : currentGig.ownerId;
-    console.log(currentGig);
-    console.log(owner);
   const isOwner = user && owner && user._id === owner._id;
   const canBid =
     isAuthenticated &&

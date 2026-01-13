@@ -150,7 +150,7 @@ function AuthPage() {
       )
       router.push("/");
     } catch (error) {
-      console.error("Error in Auth", error);
+      
     } finally {
       setLoading(false);
     }

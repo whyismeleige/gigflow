@@ -341,7 +341,6 @@ function BidCard({
 
   const gig = typeof bid.gigId === "string" ? null : bid.gigId;
   const owner = gig && typeof gig.ownerId === "string" ? null : gig?.ownerId;
-  console.log(owner);
   if (!gig) return null;
 
   const getBadgeVariant = (status: string) => {
