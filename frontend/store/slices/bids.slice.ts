@@ -60,6 +60,28 @@ const bidsSlice = createSlice({
     clearBidsError: (state) => {
       state.error = null;
     },
+    // Real-time update from socket: update bid status when hired
+    updateBidStatusFromSocket: (state, action) => {
+      const { bidId, status } = action.payload;
+      
+      // Update in myBids array
+      const myBidIndex = state.myBids.findIndex((bid) => bid._id === bidId);
+      if (myBidIndex !== -1) {
+        state.myBids[myBidIndex].status = status;
+      }
+
+      // Update in gigBids array
+      const gigBidIndex = state.gigBids.findIndex((bid) => bid._id === bidId);
+      if (gigBidIndex !== -1) {
+        state.gigBids[gigBidIndex].status = status;
+      }
+
+      // Update in items array
+      const itemIndex = state.items.findIndex((bid) => bid._id === bidId);
+      if (itemIndex !== -1) {
+        state.items[itemIndex].status = status;
+      }
+    },
   },
   extraReducers: (builder) => {
     // Get Bids by Gig
@@ -168,5 +190,5 @@ const bidsSlice = createSlice({
   },
 });
 
-export const { clearBidsError } = bidsSlice.actions;
+export const { clearBidsError, updateBidStatusFromSocket } = bidsSlice.actions;
 export default bidsSlice.reducer;

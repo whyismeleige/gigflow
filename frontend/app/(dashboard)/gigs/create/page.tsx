@@ -1,11 +1,16 @@
-// frontend/app/(dashboard)/gigs/create/page.tsx
 "use client";
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/hooks/redux";
 import { createGig } from "@/store/slices/gigs.slice";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,8 +46,10 @@ export default function CreateGigPage() {
 
   const validateDescription = (value: string): string | undefined => {
     if (!value.trim()) return "Description is required";
-    if (value.trim().length < 20) return "Description must be at least 20 characters";
-    if (value.trim().length > 2000) return "Description cannot exceed 2000 characters";
+    if (value.trim().length < 20)
+      return "Description must be at least 20 characters";
+    if (value.trim().length > 2000)
+      return "Description cannot exceed 2000 characters";
     return undefined;
   };
 
@@ -116,8 +123,10 @@ export default function CreateGigPage() {
 
       toast.success("Gig created successfully!");
       router.push(`/gigs/${result._id}`);
-    } catch (error: any) {
-      toast.error(error.message || "Failed to create gig");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to create gig";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -127,11 +136,7 @@ export default function CreateGigPage() {
     <ProtectedRoute>
       <div className="max-w-3xl mx-auto">
         {/* Back Button */}
-        <Button
-          variant="ghost"
-          className="mb-6"
-          onClick={() => router.back()}
-        >
+        <Button variant="ghost" className="mb-6" onClick={() => router.back()}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
@@ -208,7 +213,9 @@ export default function CreateGigPage() {
                   }
                 />
                 {touched.description && errors.description && (
-                  <p className="text-red-500 text-xs mt-1">{errors.description}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.description}
+                  </p>
                 )}
                 <p className="text-xs text-muted-foreground mt-1">
                   {description.length}/2000 characters (min 20)
@@ -248,7 +255,9 @@ export default function CreateGigPage() {
 
               {/* Info Box */}
               <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
-                <h4 className="font-semibold mb-2 text-sm">Tips for a successful gig:</h4>
+                <h4 className="font-semibold mb-2 text-sm">
+                  Tips for a successful gig:
+                </h4>
                 <ul className="text-sm space-y-1 text-muted-foreground">
                   <li>• Be specific about your requirements</li>
                   <li>• Set a realistic budget</li>

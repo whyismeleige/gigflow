@@ -4,7 +4,6 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { logoutUser } from "@/store/slices/auth.slice";
 import {
-  Bell,
   Briefcase,
   FileText,
   Home,
@@ -15,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -52,6 +51,8 @@ export default function DashboardLayout({
     { name: "My Gigs", href: "/gigs/my-gigs", icon: Briefcase },
     { name: "My Bids", href: "/bids/my-bids", icon: FileText },
   ];
+
+  if (!isMounted) return null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -95,11 +96,16 @@ export default function DashboardLayout({
             <div className="flex items-center space-x-4">
               {/* Create Gig Button */}
               <Link href="/gigs/create">
-                <Button size="sm" className="hidden sm:flex">
+                <Button size="sm" variant="outline" className="hidden sm:flex">
                   Post a Gig
                 </Button>
               </Link>
-                <ModeToggle/>
+              {!isAuthenticated && (
+                <Link href="/auth?view=login">
+                  <Button>Log In</Button>
+                </Link>
+              )}
+              <ModeToggle />
               {/* User Menu */}
               {isMounted && user && isAuthenticated && (
                 <DropdownMenu>
@@ -117,7 +123,13 @@ export default function DashboardLayout({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel>
+                    <DropdownMenuLabel className="flex items-center gap-2">
+                      <Avatar>
+                        <AvatarImage src={user.avatar} alt={user.name} />
+                        <AvatarFallback>
+                          {user.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium">{user.name}</p>
                         <p className="text-xs text-muted-foreground">

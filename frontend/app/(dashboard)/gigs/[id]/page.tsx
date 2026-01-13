@@ -36,11 +36,9 @@ import {
   DollarSign,
   FileText,
   Send,
-  User as UserIcon,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import PublicRoute from "@/components/routes/PublicRoute";
 
 export default function GigDetailPage() {
   const params = useParams();
@@ -92,8 +90,9 @@ export default function GigDetailPage() {
       setBidPrice("");
       // Refresh gig data to update bid count and userHasBid
       dispatch(fetchGigsById(params.id as string));
-    } catch (error: any) {
-      toast.error(error.message || "Failed to submit bid");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to submit bid";
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -116,7 +115,7 @@ export default function GigDetailPage() {
         <Briefcase className="mx-auto h-12 w-12 text-muted-foreground" />
         <h3 className="mt-4 text-lg font-semibold">Gig not found</h3>
         <p className="mt-2 text-muted-foreground">
-          This gig may have been deleted or doesn't exist
+          This gig may have been deleted or doesn&apos;t exist
         </p>
         <Link href="/gigs">
           <Button className="mt-6">Browse All Gigs</Button>
@@ -127,6 +126,8 @@ export default function GigDetailPage() {
 
   const owner =
     typeof currentGig.ownerId === "string" ? null : currentGig.ownerId;
+    console.log(currentGig);
+    console.log(owner);
   const isOwner = user && owner && user._id === owner._id;
   const canBid =
     isAuthenticated &&
@@ -156,7 +157,7 @@ export default function GigDetailPage() {
                   {currentGig.status === "open" ? "Open" : "Assigned"}
                 </Badge>
                 {currentGig.userHasBid && (
-                  <Badge variant="outline">You've submitted a bid</Badge>
+                  <Badge variant="outline">You&apos;ve submitted a bid</Badge>
                 )}
               </div>
               <CardTitle className="text-3xl mb-2">
@@ -323,7 +324,7 @@ export default function GigDetailPage() {
                         step="1"
                       />
                       <p className="text-xs text-muted-foreground mt-1">
-                        Client's budget: ₹
+                        Client&apos;s budget: ₹
                         {Number(currentGig.budget).toLocaleString()}
                       </p>
                     </div>
@@ -367,7 +368,7 @@ export default function GigDetailPage() {
               currentGig.userHasBid && (
                 <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800">
                   <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-2">
-                    ✓ You've already submitted a bid
+                    ✓ You&apos;ve already submitted a bid
                   </p>
                   <p className="text-sm text-green-600 dark:text-green-400 mb-3">
                     The client will review your proposal

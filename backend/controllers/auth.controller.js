@@ -13,6 +13,7 @@ const {
 
 const User = db.user;
 
+// Get Cookie Options
 const getCookieOptions = () => ({
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
@@ -20,6 +21,10 @@ const getCookieOptions = () => ({
   maxAge: 7 * 24 * 60 * 60 * 1000,
 });
 
+/**
+ * @description Get User Profile
+ * @route GET /api/auth/profile
+ */
 exports.getProfile = asyncHandler(async (req, res) => {
   res.status(200).send({
     user: sanitizeUser(req.user),
@@ -28,6 +33,11 @@ exports.getProfile = asyncHandler(async (req, res) => {
   });
 });
 
+
+/**
+ * @description Register New User
+ * @route POST /api/auth/register
+ */
 exports.register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -75,6 +85,11 @@ exports.register = asyncHandler(async (req, res) => {
   });
 });
 
+
+/**
+ * @description Login User
+ * @route POST /api/auth/login
+ */
 exports.login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -127,6 +142,11 @@ exports.login = asyncHandler(async (req, res) => {
   });
 });
 
+
+/**
+ * @description Logout User
+ * @route POST /api/auth/logout
+ */
 exports.logout = async (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,

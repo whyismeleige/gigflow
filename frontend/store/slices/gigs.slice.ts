@@ -70,6 +70,30 @@ const gigsSlice = createSlice({
     clearGigsError: (state) => {
       state.error = null;
     },
+    // Real-time update from socket: increment bid count
+    incrementBidCountFromSocket: (state, action) => {
+      const { gigId } = action.payload;
+      
+      // Update in myGigs array
+      const myGigIndex = state.myGigs.findIndex((gig) => gig._id === gigId);
+      if (myGigIndex !== -1) {
+        const currentCount = state.myGigs[myGigIndex].bidCount || 0;
+        state.myGigs[myGigIndex].bidCount = currentCount + 1;
+      }
+
+      // Update in items array (browse gigs)
+      const itemIndex = state.items.findIndex((gig) => gig._id === gigId);
+      if (itemIndex !== -1) {
+        const currentCount = state.items[itemIndex].bidCount || 0;
+        state.items[itemIndex].bidCount = currentCount + 1;
+      }
+
+      // Update currentGig if it matches
+      if (state.currentGig && state.currentGig._id === gigId) {
+        const currentCount = state.currentGig.bidCount || 0;
+        state.currentGig.bidCount = currentCount + 1;
+      }
+    },
   },
   extraReducers: (builder) => {
     // Fetch All Gigs
@@ -173,5 +197,5 @@ const gigsSlice = createSlice({
   },
 });
 
-export const { setSearch, clearGigsError } = gigsSlice.actions;
+export const { setSearch, clearGigsError, incrementBidCountFromSocket } = gigsSlice.actions;
 export default gigsSlice.reducer;

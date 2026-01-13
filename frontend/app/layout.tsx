@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Provider } from "react-redux";
-import { store } from "@/store";
 import { Toaster } from "react-hot-toast";
 import Providers from "@/components/providers";
 

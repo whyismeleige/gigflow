@@ -28,6 +28,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
+      "https://gigflow.piyushbuilds.me",
     ],
     credentials: true,
   })

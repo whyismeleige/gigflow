@@ -55,8 +55,9 @@ export default function GigBidsPage() {
       if (params.gigId) {
         dispatch(getBidsByGig(params.gigId as string));
       }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to hire freelancer");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to hire freelancer";
+      toast.error(message);
     } finally {
       setHiring(false);
     }
@@ -99,7 +100,7 @@ export default function GigBidsPage() {
           <MessageSquare className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-semibold">No bids yet</h3>
           <p className="mt-2 text-muted-foreground max-w-sm mx-auto">
-            Your gig hasn't received any bids yet. Share it to get more visibility!
+            Your gig hasn&apos;t received any bids yet. Share it to get more visibility!
           </p>
         </div>
       </div>

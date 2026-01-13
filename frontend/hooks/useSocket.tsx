@@ -1,7 +1,7 @@
-// frontend/hooks/useSocket.ts
+// frontend/hooks/useSocket.tsx
 import { useEffect, useRef } from "react";
 import { socket } from "@/lib/socket/socket";
-import { useAppSelector } from "./redux";
+import { useAppDispatch, useAppSelector } from "./redux";
 import toast from "react-hot-toast";
 import {
   SocketBidHiredPayload,
@@ -9,6 +9,7 @@ import {
 } from "@/types/socket.types";
 
 export function useSocket() {
+  const dispatch = useAppDispatch();
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const isConnectedRef = useRef(false);
 
@@ -29,9 +30,19 @@ export function useSocket() {
         isConnectedRef.current = false;
       });
 
-      // Listen for bid-hired event
+      // Listen for bid-hired event (freelancer gets hired)
       socket.on("bid-hired", (data: SocketBidHiredPayload) => {
+        console.log("Bid hired notification:", data);
         
+        // Update myBids state - mark the hired bid as "hired"
+        dispatch({
+          type: "bids/updateBidStatusFromSocket",
+          payload: {
+            bidId: data.bidId,
+            status: "hired",
+          },
+        });
+
         toast.success(
           <div>
             <div className="font-semibold">🎉 Congratulations!</div>
@@ -47,14 +58,23 @@ export function useSocket() {
         );
       });
 
-      // Listen for bid-received event
+      // Listen for bid-received event (gig owner receives a new bid)
       socket.on("bid-received", (data: SocketBidReceivedPayload) => {
         console.log("Bid received notification:", data);
+        
+        // Update myGigs state - increment bid count for the gig
+        dispatch({
+          type: "gigs/incrementBidCountFromSocket",
+          payload: {
+            gigId: data.gigId,
+          },
+        });
+
         toast.success(
           <div>
             <div className="font-semibold">New Bid Received!</div>
             <div className="text-sm mt-1">
-              {data.freelancerName} bid on "{data.gigTitle}"
+              {data.freelancerName} bid on &quot;{data.gigTitle}&quot;
             </div>
           </div>,
           {
@@ -76,10 +96,9 @@ export function useSocket() {
         isConnectedRef.current = false;
       };
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, dispatch]);
 
   return {
     socket,
-    isConnected: isConnectedRef.current,
   };
 }

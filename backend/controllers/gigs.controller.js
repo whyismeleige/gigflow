@@ -62,7 +62,7 @@ exports.getAllGigs = asyncHandler(async (req, res) => {
 exports.getGigById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const gig = await Gig.findById(id).populate("bids").populate("bidCount")
+  const gig = await Gig.findById(id).populate("bids").populate("bidCount").populate("ownerId");
 
   if (!gig) {
     throw new NotFoundError("Gig not found");

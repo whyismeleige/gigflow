@@ -1,7 +1,6 @@
-// frontend/app/(dashboard)/profile/page.tsx
 "use client";
 
-import { useAppSelector } from "@/hooks/redux";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -9,15 +8,23 @@ import { Separator } from "@/components/ui/separator";
 import { Calendar, Mail, User as UserIcon, Briefcase, FileText } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+import { getMyBids } from "@/store/slices/bids.slice";
+import { getMyGigs } from "@/store/slices/gigs.slice";
 
 export default function ProfilePage() {
+  const dispatch = useAppDispatch();
+
   const { user } = useAppSelector((state) => state.auth);
   const { myGigs } = useAppSelector((state) => state.gigs);
   const { myBids } = useAppSelector((state) => state.bids);
 
-  if (!user) {
-    return null;
-  }
+  useEffect(() => {
+    dispatch(getMyBids());
+    dispatch(getMyGigs());
+  }, [dispatch])
+
+  if(!user) return null;
 
   const stats = {
     totalGigs: myGigs.length,
@@ -75,7 +82,7 @@ export default function ProfilePage() {
               Your Gigs
             </CardTitle>
             <CardDescription>
-              Gigs you've posted as a client
+              Gigs you&apos;ve posted as a client
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -108,7 +115,7 @@ export default function ProfilePage() {
               Your Bids
             </CardTitle>
             <CardDescription>
-              Bids you've submitted as a freelancer
+              Bids you&apos;ve submitted as a freelancer
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -152,7 +159,7 @@ export default function ProfilePage() {
                 <div>
                   <div className="font-medium">Gigs Posted</div>
                   <div className="text-sm text-muted-foreground">
-                    Total projects you've created
+                    Total projects you&apos;ve created
                   </div>
                 </div>
               </div>
@@ -167,7 +174,7 @@ export default function ProfilePage() {
                 <div>
                   <div className="font-medium">Bids Submitted</div>
                   <div className="text-sm text-muted-foreground">
-                    Total proposals you've sent
+                    Total proposals you&apos;ve sent
                   </div>
                 </div>
               </div>

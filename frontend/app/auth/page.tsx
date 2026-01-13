@@ -11,12 +11,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { useAppDispatch } from "@/hooks/redux";
-import { loginUser, logoutUser, registerUser } from "@/store/slices/auth.slice";
-import { Eye, EyeOff, ListTodo } from "lucide-react";
+import { loginUser, registerUser } from "@/store/slices/auth.slice";
+import { Briefcase, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
-import toast from "react-hot-toast";
 
 type View = "login" | "signup";
 
@@ -144,11 +143,11 @@ function AuthPage() {
     try {
       setLoading(true);
 
-      const data = await dispatch(
+      await dispatch(
         view === "signup"
           ? registerUser({ email, password, name })
           : loginUser({ email, password })
-      ).unwrap();
+      )
       router.push("/");
     } catch (error) {
       console.error("Error in Auth", error);
@@ -176,7 +175,7 @@ function AuthPage() {
               className="flex flex-col items-center gap-2 font-medium"
             >
               <div className="flex size-10 items-center justify-center rounded-md bg-primary">
-                <ListTodo className="size-6 text-primary-foreground" />
+                <Briefcase className="size-6 text-primary-foreground" />
               </div>
               <span className="sr-only">GigFlow</span>
             </Link>

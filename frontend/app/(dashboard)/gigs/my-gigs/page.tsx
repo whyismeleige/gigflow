@@ -1,4 +1,3 @@
-// frontend/app/(dashboard)/gigs/my-gigs/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -25,17 +24,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Briefcase, Eye, MessageSquare, MoreVertical, Plus, Trash2, Edit } from "lucide-react";
+import { Briefcase, Eye, MessageSquare, MoreVertical, Plus, Trash2} from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import ProtectedRoute from "@/components/routes/ProtectedRoute";
 import { Gig } from "@/types/gig.types";
 
 export default function MyGigsPage() {
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const { myGigs, loading } = useAppSelector((state) => state.gigs);
-    console.log(myGigs);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [gigToDelete, setGigToDelete] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -58,8 +55,10 @@ export default function MyGigsPage() {
       toast.success("Gig deleted successfully!");
       setDeleteDialogOpen(false);
       setGigToDelete(null);
-    } catch (error: any) {
-      toast.error(error.message || "Failed to delete gig");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to delete gig";
+      toast.error(message);
     } finally {
       setDeleting(false);
     }
@@ -89,7 +88,7 @@ export default function MyGigsPage() {
           <div>
             <h1 className="text-3xl font-bold mb-2">My Gigs</h1>
             <p className="text-muted-foreground">
-              Manage projects you've posted and review bids
+              Manage projects you&apos;ve posted and review bids
             </p>
           </div>
           <Link href="/gigs/create">
@@ -140,7 +139,7 @@ export default function MyGigsPage() {
             <Briefcase className="mx-auto h-12 w-12 text-muted-foreground" />
             <h3 className="mt-4 text-lg font-semibold">No gigs yet</h3>
             <p className="mt-2 text-muted-foreground max-w-sm mx-auto">
-              You haven't posted any gigs. Create your first project to get started!
+              You haven&apos;t posted any gigs. Create your first project to get started!
             </p>
             <Link href="/gigs/create">
               <Button className="mt-6">

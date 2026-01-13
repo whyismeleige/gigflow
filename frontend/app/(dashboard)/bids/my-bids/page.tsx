@@ -1,11 +1,16 @@
-// frontend/app/(dashboard)/bids/my-bids/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { getMyBids, deleteBid, updateBid } from "@/store/slices/bids.slice";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -37,14 +42,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FileText, Eye, MoreVertical, Trash2, Edit, CheckCircle } from "lucide-react";
+import {
+  FileText,
+  Eye,
+  MoreVertical,
+  Trash2,
+  Edit,
+  CheckCircle,
+} from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import ProtectedRoute from "@/components/routes/ProtectedRoute";
 import { Bid } from "@/types/bid.types";
 
 export default function MyBidsPage() {
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const { myBids, loading } = useAppSelector((state) => state.bids);
 
@@ -76,8 +87,10 @@ export default function MyBidsPage() {
       toast.success("Bid withdrawn successfully!");
       setDeleteDialogOpen(false);
       setBidToDelete(null);
-    } catch (error: any) {
-      toast.error(error.message || "Failed to withdraw bid");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to withdraw bid";
+      toast.error(message);
     } finally {
       setDeleting(false);
     }
@@ -118,8 +131,10 @@ export default function MyBidsPage() {
       toast.success("Bid updated successfully!");
       setEditDialogOpen(false);
       setBidToEdit(null);
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update bid");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to update bid";
+      toast.error(message);
     } finally {
       setUpdating(false);
     }
@@ -172,7 +187,9 @@ export default function MyBidsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-yellow-600">{pendingBids.length}</div>
+              <div className="text-2xl font-bold text-yellow-600">
+                {pendingBids.length}
+              </div>
             </CardContent>
           </Card>
           <Card>
@@ -182,7 +199,9 @@ export default function MyBidsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{hiredBids.length}</div>
+              <div className="text-2xl font-bold text-green-600">
+                {hiredBids.length}
+              </div>
             </CardContent>
           </Card>
           <Card>
@@ -192,7 +211,9 @@ export default function MyBidsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-600">{rejectedBids.length}</div>
+              <div className="text-2xl font-bold text-red-600">
+                {rejectedBids.length}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -203,7 +224,8 @@ export default function MyBidsPage() {
             <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
             <h3 className="mt-4 text-lg font-semibold">No bids yet</h3>
             <p className="mt-2 text-muted-foreground max-w-sm mx-auto">
-              You haven't submitted any bids. Browse available gigs to get started!
+              You haven&apos;t submitted any bids. Browse available gigs to get
+              started!
             </p>
             <Link href="/gigs">
               <Button className="mt-6">Browse Gigs</Button>
@@ -228,7 +250,8 @@ export default function MyBidsPage() {
             <AlertDialogHeader>
               <AlertDialogTitle>Withdraw Bid</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to withdraw this bid? This action cannot be undone.
+                Are you sure you want to withdraw this bid? This action cannot
+                be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -315,9 +338,10 @@ function BidCard({
   onEditClick: (bid: Bid) => void;
 }) {
   const router = useRouter();
+
   const gig = typeof bid.gigId === "string" ? null : bid.gigId;
   const owner = gig && typeof gig.ownerId === "string" ? null : gig?.ownerId;
-
+  console.log(owner);
   if (!gig) return null;
 
   const getBadgeVariant = (status: string) => {
@@ -367,7 +391,9 @@ function BidCard({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => router.push(`/gigs/${gig._id}`)}>
+                  <DropdownMenuItem
+                    onClick={() => router.push(`/gigs/${gig._id}`)}
+                  >
                     <Eye className="mr-2 h-4 w-4" />
                     View Gig
                   </DropdownMenuItem>
@@ -399,7 +425,7 @@ function BidCard({
         </div>
 
         {/* Client Info */}
-        {/* {owner && (
+        {owner && typeof owner !== "string" && (
           <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
             <Avatar className="h-10 w-10">
               <AvatarImage src={owner.avatar} alt={owner.name} />
@@ -412,7 +438,7 @@ function BidCard({
               <div className="text-xs text-muted-foreground">{owner.email}</div>
             </div>
           </div>
-        )} */}
+        )}
 
         {/* Status Messages */}
         {bid.status === "hired" && (

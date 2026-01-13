@@ -5,7 +5,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const loginUser = createAsyncThunk(
   "auth/login",
-  async (credentials: LoginCredentials, { rejectWithValue }) => {
+  async (credentials: LoginCredentials) => {
     const response = await authApi.login(credentials);
     return response.data;
   }

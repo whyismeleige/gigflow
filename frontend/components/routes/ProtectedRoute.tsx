@@ -15,18 +15,18 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const mounted = useMounted();
 
   useEffect(() => {
-    if (mounted && !user && !loading) {
-      dispatch(fetchProfile()).unwrap();
+    if (mounted && isAuthenticated && !user && !loading) {
+      dispatch(fetchProfile());
     }
-  }, [loading, dispatch, user, mounted]);
+  }, [loading, dispatch, user, mounted, isAuthenticated]);
 
   useEffect(() => {
     if (mounted && !loading && !user && !isAuthenticated) {
       router.replace("/auth");
     }
-  }, [isAuthenticated, router, mounted]);
+  }, [isAuthenticated, router, mounted, user, loading]);
 
-  if (!mounted || !user || !isAuthenticated) {
+  if (!mounted) {
     return null; // Next.js loading.tsx will handle the loading UI
   }
 

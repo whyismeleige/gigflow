@@ -4,7 +4,9 @@ const UserSocket = require("./user.socket");
 
 function intializeSocket(server) {
   const io = new Server(server, {
-    cors: { origin: "http://localhost:3000" },
+    cors: {
+      origin: ["http://localhost:3000", "https://gigflow.piyushbuilds.me"],
+    },
     maxHttpBufferSize: 5 * 1024 * 1024,
     pingTimeout: 60000,
   });
